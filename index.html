@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Speech-to-Text</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>Real-Time Speech-to-Text</h1>
+        <div class="status-indicator">
+          <span id="connectionStatus" class="status-dot disconnected"></span>
+          <span id="statusText" class="status-text">Disconnected</span>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Audio Control Section -->
+        <div class="control-section">
+          <h2>Audio Input</h2>
+          <div class="button-group">
+            <button
+              id="startBtn"
+              class="btn btn-primary"
+              onclick="startRecording()"
+            >
+              🔴 Start Recording
+            </button>
+            <button
+              id="stopBtn"
+              class="btn btn-danger"
+              onclick="stopRecording()"
+              disabled
+            >
+              ⏹️ Stop Recording
+            </button>
+            <button
+              id="transcribeBtn"
+              class="btn btn-success"
+              onclick="requestTranscription()"
+              disabled
+            >
+              ▶️ Start Transcription
+            </button>
+            <button
+              id="clearBtn"
+              class="btn btn-secondary"
+              onclick="clearBuffer()"
+              disabled
+            >
+              🗑️ Clear Buffer
+            </button>
+          </div>
+
+          <!-- Buffer Info -->
+          <div class="buffer-info">
+            <div class="info-row">
+              <label>Buffer Size:</label>
+              <span id="bufferSize">0 samples</span>
+            </div>
+            <div class="info-row">
+              <label>Recording Time:</label>
+              <span id="recordingTime">0.0s</span>
+            </div>
+            <div class="buffer-bar-container">
+              <div id="bufferBar" class="buffer-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transcription Section -->
+        <div class="transcription-section">
+          <h2>Transcription Result</h2>
+          <div id="transcriptionOutput" class="transcription-output">
+            <p class="placeholder">Awaiting transcription...</p>
+          </div>
+          <div class="transcription-info">
+            <span id="transcriptionStatus">Ready</span>
+          </div>
+        </div>
+
+        <!-- Log Section -->
+        <div class="log-section">
+          <h2>Event Log</h2>
+          <div id="eventLog" class="event-log">
+            <div class="log-entry info">Waiting for connection...</div>
+          </div>
+          <button id="clearLogBtn" class="btn btn-small" onclick="clearLog()">
+            Clear Log
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>Connected to: <code>ws://localhost:5000</code></p>
+        <p>Sample Rate: 16kHz | Chunk Duration: 0.5s</p>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
