@@ -193,11 +193,6 @@ section h2 {
   min-width: auto;
 }
 
-.btn.recording {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  animation: pulse 2s infinite;
-}
-
 /* Buffer Info */
 .buffer-info {
   background: white;

@@ -12,8 +12,6 @@ let isRecording = false;
 let recordingStartTime = null;
 let recordingTimer = null;
 let audioBuffer = []; // Buffer to accumulate audio chunks
-let continuousMode = false; // Toggle continuous transcription
-let fullTranscription = ""; // Store full transcription
 const maxBufferSize = SAMPLE_RATE * 5;
 
 // Initialize on page load
@@ -63,14 +61,7 @@ function initializeWebSocket() {
     });
 
     socket.on("transcription_result", (data) => {
-      // Handle both continuous and manual transcription
-      if (data.continuous) {
-        // Continuous transcription - append results
-        displayContinuousTranscription(data.text);
-      } else {
-        // Manual transcription - replace and show success
-        displayTranscriptionResult(data.text, data.success);
-      }
+      displayTranscriptionResult(data.text, data.success);
       if (document.getElementById("transcribeBtn")) {
         document.getElementById("transcribeBtn").disabled = false;
       }
@@ -245,42 +236,12 @@ function requestTranscription() {
     return;
   }
 
-  continuousMode = !continuousMode;
-  const btn = document.getElementById("transcribeBtn");
+  document.getElementById("transcribeBtn").disabled = true;
+  document.getElementById("transcriptionStatus").textContent =
+    "Transcribing...";
+  updateLog("Transcription requested", "info");
 
-  if (continuousMode) {
-    // Entering continuous mode
-    fullTranscription = "";
-    btn.textContent = "⏸️ Stop Transcription";
-    btn.classList.add("recording");
-    document.getElementById("transcriptionStatus").textContent =
-      "Continuous transcription ON";
-    updateLog("Continuous transcription started", "success");
-  } else {
-    // Exiting continuous mode
-    btn.textContent = "▶️ Start Transcription";
-    btn.classList.remove("recording");
-    document.getElementById("transcriptionStatus").textContent =
-      "Transcription paused";
-    updateLog("Continuous transcription paused", "warning");
-  }
-}
-
-function displayContinuousTranscription(text) {
-  if (!text || text === "No audio to transcribe") return;
-
-  // Append to full transcription
-  if (fullTranscription.length > 0) {
-    fullTranscription += " " + text;
-  } else {
-    fullTranscription = text;
-  }
-
-  const output = document.getElementById("transcriptionOutput");
-  output.innerHTML = `<p>${escapeHtml(fullTranscription)}</p>`;
-  output.classList.remove("error");
-  output.classList.add("success");
-  output.scrollTop = output.scrollHeight;
+  socket.emit("transcribe_request");
 }
 
 function displayTranscriptionResult(text, success) {
@@ -314,8 +275,10 @@ function clearBuffer() {
     updateLog("Not connected to server", "error");
     return;
   }
-
+  const output = document.getElementById("transcriptionOutput");
   audioBuffer = []; // Clear frontend buffer too
+  output.innerHTML = ""; // Clear transcription output
+  output.classList.remove("success", "error");
   socket.emit("clear_buffer");
   updateLog("Buffer cleared", "info");
 }
