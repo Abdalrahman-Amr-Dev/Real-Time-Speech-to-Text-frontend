@@ -1,5 +1,6 @@
 // WebSocket and Audio Configuration
-const WS_URL = "http://localhost:5000";
+// const WS_URL = "http://localhost:5000";
+const WS_URL ="https://f63qpccl-5000.uks1.devtunnels.ms"
 const SAMPLE_RATE = 16000;
 const CHUNK_DURATION = 0.5;
 
