@@ -12,7 +12,7 @@ let isRecording = false;
 let recordingStartTime = null;
 let recordingTimer = null;
 let audioBuffer = []; // Buffer to accumulate audio chunks
-const maxBufferSize = SAMPLE_RATE * 5;
+const maxBufferSize = SAMPLE_RATE * 50; // 50 seconds buffer at 16kHz
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
